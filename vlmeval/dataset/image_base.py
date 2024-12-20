@@ -72,6 +72,9 @@ class ImageBaseDataset:
         if np.all([istype(x, int) for x in data['index']]):
             data['index'] = [int(x) for x in data['index']]
 
+        if dataset == 'MMBench_QT_DEBUG_EN':
+            data = data[data['index'].isin([1001192 + i for i in range(100)])]
+
         self.data = data
         self.post_build(dataset)
 

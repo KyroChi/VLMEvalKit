@@ -2,6 +2,8 @@ from vlmeval.vlm import *
 from vlmeval.api import *
 from functools import partial
 
+from qtvit.llava_qtvit import LLaVaNextQtViT, LlavaQtvito
+
 PandaGPT_ROOT = None
 MiniGPT4_ROOT = None
 TransCore_ROOT = None
@@ -138,11 +140,13 @@ qwen_series = {
 
 llava_series = {
     'llava_v1.5_7b': partial(LLaVA, model_path='liuhaotian/llava-v1.5-7b'),
+    'llava_v1.5_7b_qtvit': partial(LlavaQtvito, model_path='liuhaotian/llava-v1.5-7b'),
     'llava_v1.5_13b': partial(LLaVA, model_path='liuhaotian/llava-v1.5-13b'),
     'llava_v1_7b': partial(LLaVA, model_path=LLAVA_V1_7B_MODEL_PTH),
     'sharegpt4v_7b': partial(LLaVA, model_path='Lin-Chen/ShareGPT4V-7B'),
     'sharegpt4v_13b': partial(LLaVA, model_path='Lin-Chen/ShareGPT4V-13B'),
     'llava_next_vicuna_7b': partial(LLaVA_Next, model_path='llava-hf/llava-v1.6-vicuna-7b-hf'),
+    'llava_next_vicuna_7b_qtvit': partial(LLaVaNextQtViT, model_path='llava-hf/llava-v1.6-vicuna-7b-hf'),
     'llava_next_vicuna_13b': partial(LLaVA_Next, model_path='llava-hf/llava-v1.6-vicuna-13b-hf'),
     'llava_next_mistral_7b': partial(LLaVA_Next, model_path='llava-hf/llava-v1.6-mistral-7b-hf'),
     'llava_next_yi_34b': partial(LLaVA_Next, model_path='llava-hf/llava-v1.6-34b-hf'),

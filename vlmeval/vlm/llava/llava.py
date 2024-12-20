@@ -227,7 +227,6 @@ class LLaVA(BaseModel):
         ].strip()
         return output
 
-
 class LLaVA_Next(BaseModel):
 
     INSTALL_REQ = False
@@ -399,7 +398,9 @@ class LLaVA_Next(BaseModel):
         inputs = self.processor(prompt, images, return_tensors="pt").to(
             "cuda", torch.float16
         )
-        output = self.model.generate(**inputs, **self.kwargs)
+        output = self.model.generate(
+            **inputs, **self.kwargs
+        )
         answer = self.processor.decode(output[0], skip_special_token=True)
         answer = self.output_process(answer)
         return answer

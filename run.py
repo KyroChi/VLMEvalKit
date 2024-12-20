@@ -1,3 +1,5 @@
+import numpy as np
+import random
 import torch
 import torch.distributed as dist
 
@@ -9,6 +11,18 @@ from vlmeval.inference_mt import infer_data_job_mt
 from vlmeval.smp import *
 from vlmeval.utils.result_transfer import MMMU_result_transfer, MMTBench_result_transfer
 
+def seed_everything(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+
+    if torch.distributed.is_initialized():
+        torch.distributed.barrier()
+        torch.distributed.broadcast(torch.tensor(seed), 0)
 
 def build_model_from_config(cfg):
     import vlmeval.api
@@ -122,6 +136,8 @@ You can launch the evaluation by setting either --data and --model or --config.
     parser.add_argument('--ignore', action='store_true', help='Ignore failed indices. ')
     # Reuse: will reuse the existing prediction files
     parser.add_argument('--reuse', action='store_true')
+
+    parser.add_argument('--alpha', type=float, default=0.0, help='alpha param for quadtree')
 
     args = parser.parse_args()
     return args
@@ -310,7 +326,8 @@ def main():
                         dataset=dataset,
                         verbose=args.verbose,
                         api_nproc=args.nproc,
-                        ignore_failed=args.ignore)
+                        ignore_failed=args.ignore,
+                        alpha=args.alpha)
 
                 # Set the judge kwargs first before evaluation or dumping
 
@@ -427,5 +444,6 @@ def main():
 
 
 if __name__ == '__main__':
+    seed_everything(42)
     load_env()
     main()
